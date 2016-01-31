@@ -24,7 +24,7 @@ class XORDecoder(object):
 			'01', repeat=key_length)):
 			self._all_keys.append(byte)
 
-	def Decode(self, encoded_string):
+	def DecodeHex(self, encoded_string):
 		"""Decodes a string represented in hexadecimal ASCII format.
 		Returns a list of tuple. Each element contains a decoding we detected
 		to likely be English plaintext, and the binary key used for that decoding.

@@ -14,7 +14,7 @@ if __name__ == '__main__':
 		# Remove trailing newlines.
 		string = string.strip()
 
-		candidates = decoder.Decode(string)
+		candidates = decoder.DecodeHex(string)
 
 		# We need at least one candidate. For now we assume there is
 		# exactly one.
