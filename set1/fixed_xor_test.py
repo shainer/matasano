@@ -20,5 +20,14 @@ class testXor(unittest.TestCase):
 			fixed_xor.InvalidArgumentError,
 			fixed_xor.fixed_xor, 'a', 'g')
 
+	def testFixedXorBinary(self):
+		self.assertEqual(
+			'1010', fixed_xor.fixed_xor_bins('0101', '1111'))
+
+	def testFixedXorBinary_InvalidString(self):
+		self.assertRaises(
+			fixed_xor.InvalidArgumentError,
+			fixed_xor.fixed_xor_bins, '1111', '3322')
+
 if __name__ == '__main__':
 	unittest.main()
