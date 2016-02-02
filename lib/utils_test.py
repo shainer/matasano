@@ -21,3 +21,10 @@ class testUtils(unittest.TestCase):
 		self.assertRaises(
 			utils.InvalidArgumentError,
 			utils.bin_to_hex, '1012')
+
+	def testBase64ToBin(self):
+		self.assertEqual('010011010110000101101110',
+						 utils.base64_to_bin('TWFu'))
+
+	def testBase64ToAscii(self):
+		self.assertEqual('Man', utils.base64_to_ascii('TWFu'))

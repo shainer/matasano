@@ -1,5 +1,6 @@
 """Utilities not related to a specific challenge."""
 
+import base64
 
 class Error(Exception):
 	pass
@@ -96,3 +97,34 @@ def bin_to_ascii(bin_string):
 		ascii += chr(num_piece)
 
 	return (ascii, is_readable)
+
+def base64_to_bin(text64):
+	"""Converts a base64-encoded string into a binary string."""
+	text = base64.b64decode(text64)
+	bin_text = ''
+
+	for ch in text:
+		# We remove the leading '0b' added by bin()
+		bin_ch = bin(ch)[2:]
+
+		# Each 'ch' is a decimal ASCII character, so the resulting
+		# binary number must have 8 digits. We pad with zeroes when
+		# shorter.
+		while len(bin_ch) < 8:
+			bin_ch = '0' + bin_ch
+
+		bin_text += bin_ch
+
+	return bin_text
+
+def base64_to_ascii(text64):
+	"""Converts a base64-encoded string into an ASCII string."""
+	text = base64.b64decode(text64)
+	ascii_text = ''
+
+	# The loop gives us the (decimal) ASCII number for each character,
+	# so we only need to convert it to an actual character.
+	for ch in text:
+		ascii_text += chr(ch)
+
+	return ascii_text

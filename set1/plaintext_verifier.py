@@ -66,7 +66,7 @@ class PlaintextVerifier(object):
 				  	  key = lambda x : freq_map[x],
 				  	  reverse=True)
 
-	def _CheckFrequency(self, s):
+	def CheckFrequency(self, s):
 		"""Checks whether the most frequent character in the text is in the list
 		of most frequent characters in English text."""
 		freq_list = self._SortByFrequency(s)
@@ -83,7 +83,7 @@ class PlaintextVerifier(object):
 		if not self._CheckPunctuaction(s):
 			return False
 
-		if check_frequency and not self._CheckFrequency(s):
+		if check_frequency and not self.CheckFrequency(s):
 			return False
 
 		return True

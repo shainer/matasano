@@ -17,7 +17,15 @@ class XOREncoder(object):
 
 		return bin_str
 
-	def Encode(self, text, key):
+	def _DoEncode(self, text, key):
+		"""Computes the XOR between a text and a key. Both are expressed
+		as list of ASCII characters.
+
+		The text length is assumed to be a multiple of the key length;
+		the key length is extended accordingly if shorted.
+
+		Returns the encoded string as a binary string.
+		"""
 		text_bin = ''
 		key_bin = ''
 
@@ -36,4 +44,20 @@ class XOREncoder(object):
 			else:
 				res_bin += '1'
 
-		return utils.bin_to_hex(res_bin)
+		return res_bin
+
+	def Encode(self, text, key):
+		"""The result is the string as hexadecimals."""
+		bin_result = self._DoEncode(text, key)
+		return utils.bin_to_hex(bin_result)
+
+	def EncodeAsAscii(self, text, key):
+		"""The result is an ASCII string."""
+		bin_result = self._DoEncode(text, key)
+		ascii_result = utils.bin_to_ascii(bin_result)
+
+		# Output is not ASCII readable, discarding the result.
+		if not ascii_result[1]:
+			return ''
+
+		return ascii_result[0]
