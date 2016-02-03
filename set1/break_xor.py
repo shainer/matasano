@@ -7,41 +7,6 @@ import sys
 sys.path.insert(0, '/home/shainer/source/matasano/lib')
 import utils
 
-def _ByteToPaddedBin(byte):
-	bin_str = '{0:b}'.format(byte)
-
-	while len(bin_str) < 8:
-		bin_str = '0' + bin_str
-
-	return bin_str
-
-def HammingDistance(s1, s2):
-	assert len(s1) == len(s2)
-	distance = 0
-
-	for i in range(0, len(s1)):
-		s1_byte = ord(s1[i])
-		s2_byte = ord(s2[i])
-
-		s1_bin = _ByteToPaddedBin(s1_byte)
-		s2_bin = _ByteToPaddedBin(s2_byte)
-
-		for j in range(0, len(s1_bin)):
-			if s1_bin[j] != s2_bin[j]:
-				distance += 1
-
-	return distance
-
-def HammingDistanceBin(b1, b2):
-	assert len(b1) == len(b2)
-	distance = 0
-
-	for i in range(len(b1)):
-		if b1[i] != b2[i]:
-			distance += 1
-
-	return distance
-
 def findKey(bin_text, keysize):
 	"""Try to find the encoding key of given size for bin_text.
 
@@ -93,38 +58,58 @@ def findKey(bin_text, keysize):
 	# Congratulations!
 	return ascii_key
 
+def NormalizedHammingDistance(bin_text, keysize):
+	"""Computes the normalized average Hamming distance between
+	consecutive pairs of bin_text blocks of KEYSIZE bytes.
+
+	The lowest this result is, the more are consecutive blocks of
+	KEYSIZE bytes likely to be similar to each other; this means 
+	that they were likely encoded with the same set of characters,
+	and therefore the key could be of KEYSIZE length (in bytes).
+	"""
+	hamming_distance = 0
+
+	# Number of blocks of KEYSIZE bytes in the text.
+	num_blocks = int(len(bin_text) / (keysize * 8))
+	# Keeps track of the first bit of the pair of chunks we
+	# are considering
+	start_block_index = 0
+
+	# Takes the first pair of blocks of KEYSIZE bytes, then
+	# the second pair, etc... (no overlapping). For each pair,
+	# compare the Hamming distance between the two blocks and sum
+	# it to our accumulator.
+
+	# For some keysizes there are leftover data at the end that
+	# cannot be divided in two chunks of the required size; in that
+	# case we ignore them and stop before.
+	end_block = len(bin_text) - (keysize * 16)
+	while start_block_index <= end_block:
+		# Each binary chunk is therefore of size keysize*8.
+		chunk1 = bin_text[start_block_index : start_block_index + keysize*8]
+		chunk2 = bin_text[start_block_index + keysize*8 : start_block_index + keysize*16]
+
+		hamming_distance += utils.HammingDistance(chunk1, chunk2)
+		start_block_index += (keysize * 16)
+
+	# The normalized distance is the Hamming distance divided by the
+	# number of blocks and the key size.
+	return (hamming_distance / (num_blocks * keysize))
+
+
 def sortKeysizes(bin_text, min_keysize, max_keysize):
 	"""Sort all keysizes in the given range by their likelihood to be
 	the real one for this binary text. Returns the sorted list."""
 	keysizes_with_distance = {}
 
 	for keysize in range(min_keysize, max_keysize+1):
-		hamming_distance = 0
+		keysizes_with_distance[keysize] = (
+			NormalizedHammingDistance(bin_text, keysize))
 
-		# Number of blocks of KEYSIZE bytes in the text.
-		num_blocks = int(len(bin_text) / (keysize * 8))
-
-		# Takes the first pair of blocks of KEYSIZE bytes, then
-		# the second pair, etc... (no overlapping). For each pair,
-		# compare the Hamming distance between the two blocks and sum
-		# it to the original one.
-		for block_index in range(0, num_blocks):
-			chunk1 = bin_text[block_index : block_index + keysize*8]
-			chunk2 = bin_text[block_index + keysize*8 : block_index + keysize*16]
-
-			block_index += (keysize * 16)
-			hamming_distance += HammingDistanceBin(chunk1, chunk2)
-
-		# The normalized distance is the Hamming distance divided by the
-		# number of blocks and the key size.
-		norm_distance = hamming_distance / (num_blocks * keysize)
-		keysizes_with_distance[keysize] = norm_distance
-
-	# Sort key sizes from lowest normalized distance to the highest.
-	keysizes = sorted(
+	# Sort key sizes from lowest normal distance to the highest.
+	return sorted(
 		keysizes_with_distance.keys(),
 		key = lambda x : keysizes_with_distance[x])
-	return keysizes
 
 def breakXOR(text, min_keysize, max_keysize):
 	bin_text = utils.base64_to_bin(text)

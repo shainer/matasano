@@ -28,3 +28,7 @@ class testUtils(unittest.TestCase):
 
 	def testBase64ToAscii(self):
 		self.assertEqual('Man', utils.base64_to_ascii('TWFu'))
+
+	def testHammingDistance(self):
+		self.assertEqual(37, utils.HammingDistanceAscii(
+			'this is a test', 'wokka wokka!!!'))

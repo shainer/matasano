@@ -128,3 +128,50 @@ def base64_to_ascii(text64):
 		ascii_text += chr(ch)
 
 	return ascii_text
+
+def ByteToPaddedBin(byte):
+	"""Converts a byte to a binary string of length 8."""
+
+	bin_str = '{0:b}'.format(byte)
+
+	while len(bin_str) < 8:
+		bin_str = '0' + bin_str
+
+	return bin_str
+
+
+def HammingDistance(b1, b2):
+	"""Computes the Hamming distance between two binary strings.
+
+	No verification is done on the strings (I am lazy), so use
+	at your own risk.
+	"""
+	assert len(b1) == len(b2)
+	distance = 0
+
+	for i in range(len(b1)):
+		if b1[i] != b2[i]:
+			distance += 1
+
+	return distance
+
+def HammingDistanceAscii(s1, s2):
+	"""Computes the Hamming distance between two ASCII strings."""
+	assert len(s1) == len(s2)
+	distance = 0
+
+	for i in range(0, len(s1)):
+		s1_byte = ord(s1[i])
+		s2_byte = ord(s2[i])
+
+		# Each byte is converted to binary; the resulting string
+		# must have length 8 in order to preserve the ASCII
+		# information, therefore we pad it.
+		s1_bin = ByteToPaddedBin(s1_byte)
+		s2_bin = ByteToPaddedBin(s2_byte)
+
+		for j in range(0, len(s1_bin)):
+			if s1_bin[j] != s2_bin[j]:
+				distance += 1
+
+	return distance
