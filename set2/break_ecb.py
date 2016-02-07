@@ -1,38 +1,11 @@
 #!/usr/bin/python2
 
+import aes_lib
 import base64
 import collections
 
 from Crypto.Cipher import AES
 from Crypto import Random
-
-class RandomEncrypter(object):
-
-	def __init__(self):
-		self.key = self.GenerateRandomBytes(AES.block_size)
-		self.cipher = AES.new(self.key, mode=AES.MODE_ECB)
-
-		base64_filler = ('Um9sbGluJyBpbiBteSA1LjAKV2l0aCBteSByYWctdG9wIGRvd24gc28gbXkg'
-						 'aGFpciBjYW4gYmxvdwpUaGUgZ2lybGllcyBvbiBzdGFuZGJ5IHdhdmluZyBq'
-						 'dXN0IHRvIHNheSBoaQpEaWQgeW91IHN0b3A/IE5vLCBJIGp1c3QgZHJvdmUg'
-						 'YnkK')
-		self.filler = base64.b64decode(base64_filler)
-
-	def GenerateRandomBytes(self, size):
-		"""Random byte string of given size."""
-		return Random.new().read(size)
-
-	def Encrypt(self, plaintext):
-		"""Returns a tuple with the encrypted text and the mode used."""
-		text = plaintext + bytes(self.filler)
-
-		# Pad with random bytes if the resulting text size is not a multiple
-		# of the key size.
-		while len(text) % AES.block_size != 0:
-			text += self.GenerateRandomBytes(1)
-
-		return self.cipher.encrypt(text)
-
 
 def CountRepeatedBlocks(byte_string, chunk_size):
 	"""Counts how many 16-bytes chunks in the string are
@@ -144,7 +117,7 @@ def BreakECB(enc, block_size):
 
 
 if __name__ == '__main__':
-	enc = RandomEncrypter()
+	enc = aes_lib.RandomizedCipher()
 
 	block_size = GetBlockSize(enc)
 	print "[**] Detected block size is " + str(block_size)
