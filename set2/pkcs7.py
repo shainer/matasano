@@ -9,13 +9,13 @@ def _Padding(string, blockSize):
 
 
 def Pkcs7(string, blockSize):
-	byte_string = bytearray(string, 'ascii')
 	numPadding = _Padding(string, blockSize)
+	paddedString = string
 
 	for i in range(0, numPadding):
-		byte_string += bytes([numPadding])
+		paddedString += chr(numPadding)
 
-	return byte_string
+	return paddedString
 
 if __name__ == '__main__':
 	print(Pkcs7('YELLOW SUBMARINE', 20))
