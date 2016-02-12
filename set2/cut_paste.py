@@ -2,6 +2,7 @@
 
 import aes_lib
 from pkcs7 import Pkcs7
+from validate_pkcs7 import strip_pkcs7
 
 # Block size used by AES here.
 BLOCK_SIZE = 16
@@ -35,35 +36,13 @@ def CreateProfile(email_address):
 
 def CreateEncryptedProfile(email_address, encrypter):
 	profile = CreateProfile(email_address)
-
-	# We assume our oracle uses a fixed padding that we know about.
-	# In reality, it is likely to use a common padding algorithm, such
-	# as Pkcs7, and we can fabricate the right padding below.
 	profile = Pkcs7(profile, BLOCK_SIZE)
 	return encrypter.aes_encrypt(profile)
-
-def StripPadding(string):
-	# A bit of a lazy implementation that is not really verifying
-	# that this is correct Pkcs7; we just remove non-ASCII bytes
-	# at the end of the string, since padding is usually composed
-	# of those. I will do a more canonical implementation once I
-	# figure out how encoding works.
-	def ReadableAscii(i):
-		return (i == 10 or (i > 31 and i < 127))
-
-	index = len(string) - 1
-
-	for ch in string[::-1]:
-		if ReadableAscii(ch):
-			break
-		index -= 1
-
-	return string[:index+1]
 
 def DecryptRole(encrypted_profile, encrypter):
 	pt = encrypter.aes_decrypt(encrypted_profile)
 	# Removes padding and verifies it is correct.
-	pt = StripPadding(pt)
+	pt = strip_pkcs7(pt)
 	profile = ParseCookie(pt)
 	return profile
 
@@ -100,7 +79,7 @@ if __name__ == "__main__":
 	# the address is optional, but we include it in case our oracle
 	# performs some basic validation of email addresses.
 	address = 'XXXXXXXXXXadmin'
-	address += '\x11' * 11
+	address += chr(11) * 11
 	address += '@bar.it'
 
 	p2 = CreateEncryptedProfile(address, enc)
