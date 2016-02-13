@@ -2,7 +2,7 @@
 
 import aes_lib
 from pkcs7 import Pkcs7
-from validate_pkcs7 import strip_pkcs7
+from pkcs7 import StripPkcs7
 
 # Block size used by AES here.
 BLOCK_SIZE = 16
@@ -36,13 +36,10 @@ def CreateProfile(email_address):
 
 def CreateEncryptedProfile(email_address, encrypter):
 	profile = CreateProfile(email_address)
-	profile = Pkcs7(profile, BLOCK_SIZE)
-	return encrypter.aes_encrypt(profile)
+	return encrypter.aes_pad_and_encrypt(profile)
 
 def DecryptRole(encrypted_profile, encrypter):
-	pt = encrypter.aes_decrypt(encrypted_profile)
-	# Removes padding and verifies it is correct.
-	pt = strip_pkcs7(pt)
+	pt = encrypter.aes_decrypt_and_depad(encrypted_profile)
 	profile = ParseCookie(pt)
 	return profile
 

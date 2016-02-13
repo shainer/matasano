@@ -21,16 +21,16 @@ if __name__ == '__main__':
 	print(Pkcs7('YELLOW SUBMARINE', 20))
 
 
-def StripPkcs7(string):
+def StripPkcs7(string, blockSize):
 	paddingFound = False
 
-	if len(string) % 16 != 0:
+	if len(string) % blockSize != 0:
 		raise Exception('String has not been padded properly.')
 
 	index = len(string) - 1
 
 	lastCh = string[index]
-	if lastCh > 16:
+	if lastCh > blockSize:
 		return string
 
 	num_padding = 1

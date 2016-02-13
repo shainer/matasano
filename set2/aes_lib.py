@@ -2,6 +2,8 @@ import base64
 from Crypto.Cipher import AES
 from Crypto import Random
 import struct
+from pkcs7 import Pkcs7
+from pkcs7 import StripPkcs7
 
 class AESCipher(object):
 	def __init__(self, key=None, mode=AES.MODE_ECB, iv=None):
@@ -35,20 +37,12 @@ class AESCipher(object):
 		return self._cipher.encrypt(message)
 
 	def aes_pad_and_encrypt(self, message):
-		pt = message
-		self.padding = 0
-
-		while len(pt) % AES.block_size != 0:
-			pt += '\x00'
-			self.padding += 1
-		return self.aes_encrypt(pt)
+		"""Encrypts a message under the cipher, adding PKCS7 padding if required."""
+		return self.aes_encrypt(Pkcs7(message, AES.block_size))
 
 	def aes_decrypt_and_depad(self, message):
-		pt = self.aes_decrypt(message)
-
-		if self.padding:
-			return pt[:-self.padding]
-		return pt
+		"""Decrypts a message under the cipher, removing and verifying PKCS7 padding."""
+		return StripPkcs7(self.aes_decrypt(message), AES.block_size)
 
 	def GenerateRandomBytes(self, size):
 		"""Random byte string of given size."""
