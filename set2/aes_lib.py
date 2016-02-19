@@ -52,16 +52,40 @@ class AESCipher(object):
 	def _ByteXOR(self, s1, s2):
 		"""Computes the XOR between two byte strings."""
 		assert len(s1) == len(s2)
-		res = ''
+		res = b''
 
 		for i in range(0, len(s1)):
 			# Each byte is converted to a number, XORed, and then
 			# converted back.
 			n1 = s1[i]
 			n2 = s2[i]
-			res += chr(n1 ^ n2)
+			res += bytes(bytearray([n1 ^ n2]))
 
 		return res
+
+	def SimulateCBCEncryption(self, plaintext):
+		assert self.mode == AES.MODE_ECB
+
+		prev_ct = self._iv
+		block_index = 0
+		ciphertext = b''
+
+		# The loop simulates decryption through AES in CBC mode.
+		# In such mode, the ciphertext is divided in blocks the size
+		# of the key. Each block is decrypted, then the plaintext is XORed
+		# with the previous ciphertext block. To initialize the algorithm,
+		# a random IV (initialization vector) is used.
+		while block_index < len(plaintext):
+			block = plaintext[block_index : block_index + AES.block_size]
+			final_block = self._ByteXOR(block, prev_ct)
+
+			cipher_block = self.aes_encrypt(final_block)
+			prev_ct = cipher_block
+			ciphertext += cipher_block
+
+			block_index += AES.block_size
+
+		return ciphertext
 
 	def SimulateCBCDecryption(self, ciphertext):
 		"""Implement decryption with CBC mode, without relying on the
@@ -73,7 +97,7 @@ class AESCipher(object):
 
 		prev_ct = self._iv
 		block_index = 0
-		plaintext = ''
+		plaintext = b''
 
 		# The loop simulates decryption through AES in CBC mode.
 		# In such mode, the ciphertext is divided in blocks the size
