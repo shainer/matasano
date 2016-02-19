@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 import aes_lib
 from pkcs7 import Pkcs7
@@ -36,7 +36,7 @@ def CreateProfile(email_address):
 
 def CreateEncryptedProfile(email_address, encrypter):
 	profile = CreateProfile(email_address)
-	return encrypter.aes_pad_and_encrypt(profile)
+	return encrypter.aes_pad_and_encrypt(bytes(profile, 'ascii'))
 
 def DecryptRole(encrypted_profile, encrypter):
 	pt = encrypter.aes_decrypt_and_depad(encrypted_profile)

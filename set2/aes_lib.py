@@ -59,7 +59,7 @@ class AESCipher(object):
 			# converted back.
 			n1 = s1[i]
 			n2 = s2[i]
-			res += bytes(bytearray([n1 ^ n2]))
+			res += bytes([n1 ^ n2])
 
 		return res
 
@@ -129,5 +129,6 @@ class RandomizedCipher(AESCipher):
 
 	def Encrypt(self, plaintext):
 		"""Returns the encrypted text."""
-		text = plaintext + bytes(self.filler)
-		return AESCipher.aes_encrypt(self, text)
+		text = plaintext + self.filler
+
+		return AESCipher.aes_pad_and_encrypt(self, text)

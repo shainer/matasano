@@ -13,7 +13,7 @@ def Pkcs7(string, blockSize):
 	paddedString = string
 
 	for i in range(0, numPadding):
-		paddedString += chr(numPadding)
+		paddedString += bytes([numPadding])
 
 	return paddedString
 

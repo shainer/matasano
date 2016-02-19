@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 import aes_lib
 import base64
@@ -28,7 +28,7 @@ def CountRepeatedBlocks(byte_string, chunk_size):
 
 
 def GetBlockSize(encrypter):
-	pad = ''
+	pad = b''
 	initial_len = len(encrypter.Encrypt(pad))
 	l = initial_len
 
@@ -37,7 +37,7 @@ def GetBlockSize(encrypter):
 	# actually increased when we added more plaintext, signaling
 	# that we added a new ciphertext block.
 	while l == initial_len:
-		pad += 'A'
+		pad += b'A'
 		l = len(encrypter.Encrypt(pad))
 
 	# Find 'l2' such as it is the next ciphertext length with the
@@ -45,7 +45,7 @@ def GetBlockSize(encrypter):
 	# ciphertext.
 	l2 = l
 	while l2 == l:
-		pad += 'A'
+		pad += b'A'
 		l2 = len(encrypter.Encrypt(pad))
 
 	# The distance between them is the size of one block.
@@ -68,16 +68,16 @@ def ModeToString(mode):
 def GetNumSecretBlocks(enc, block_size):
 	# Add no plaintext of our own to find out how many are
 	# appended by the encrypter.
-	c = enc.Encrypt('')
-	return len(c) / block_size
+	c = enc.Encrypt(b'')
+	return int(len(c) / block_size)
 
 def BreakECB(enc, block_size):
 	"""Breaks this specific ECB oracle given the block size we computed before."""
-	broken_text = ''
+	broken_text = b''
 	num_secret_blocks = GetNumSecretBlocks(enc, block_size)
 
 	# List of ASCII readable bytes as decimal integers.
-	readable_bytes = [10] + range(32, 127)
+	readable_bytes = [10] + list(range(32, 127))
 
 	# We can discover one byte of the "secret string" with this method:
 	# 1. Encrypt a plaintext formed by as many A as the block size minus 1.
@@ -95,7 +95,7 @@ def BreakECB(enc, block_size):
 	# the whole plaintext that comes before that.
 	for k in range(0, num_secret_blocks):
 		for b in range(block_size - 1, -1, -1):
-			oneshort = enc.Encrypt('A' * b)
+			oneshort = enc.Encrypt(b'A' * b)
 			# Get only the block we are currently decrypting.
 			oneshort = oneshort[block_size * k : block_size * (k+1)]
 
@@ -103,13 +103,13 @@ def BreakECB(enc, block_size):
 				# The generated plaintext here contains the same padding as the
 				# original one, plus the secret key plaintext we discovered (if any),
 				# and the current guess for the next byte.
-				pt = ('A' * b) + broken_text + chr(n)
+				pt = (b'A' * b) + broken_text + bytes([n])
 				calculated = enc.Encrypt(pt)
 				# Get the block we are currently decrypting.
 				calculated = calculated[block_size * k : block_size * (k+1)]
 
 				if calculated == oneshort:
-					broken_text += chr(n)
+					broken_text += bytes([n])
 					break
 
 	# Chop to known size otherwise we also returned the random padding at the end.
@@ -120,17 +120,16 @@ if __name__ == '__main__':
 	enc = aes_lib.RandomizedCipher()
 
 	block_size = GetBlockSize(enc)
-	print "[**] Detected block size is " + str(block_size)
+	print("[**] Detected block size is " + str(block_size))
 
 	ciphertext = enc.Encrypt(b'A' * (block_size * 2))
 	mode = DetectEncryptionMode(ciphertext, block_size)
 
 	if mode != AES.MODE_ECB:
-		print "[!!] Wrong encryption mode detected: " + str(mode)
+		print("[!!] Wrong encryption mode detected: " + str(mode))
 		exit(0)
 
-	print "[**] Detected mode is: " + ModeToString(mode)
+	print("[**] Detected mode is: " + ModeToString(mode))
 
 	plaintext = BreakECB(enc, block_size)
-	print "[**] Uncovered plaintext: "
-	print plaintext
+	print("[**] Uncovered plaintext: " + plaintext.decode('ascii'))
