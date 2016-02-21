@@ -4,6 +4,7 @@ from Crypto import Random
 import struct
 from pkcs7 import Pkcs7
 from pkcs7 import StripPkcs7
+import random
 
 class AESCipher(object):
 	def __init__(self, key=None, mode=AES.MODE_ECB, iv=None):
@@ -127,8 +128,18 @@ class RandomizedCipher(AESCipher):
 						 'YnkK')
 		self.filler = base64.b64decode(base64_filler)
 
+		# Intentionally bigger than 1 block to make things a bit more challenging.
+		randomPrefixLen = random.randint(1, 32)
+		self.randomPrefix = AESCipher.GenerateRandomBytes(self, randomPrefixLen)
+
 	def Encrypt(self, plaintext):
 		"""Returns the encrypted text."""
 		text = plaintext + self.filler
+		return AESCipher.aes_pad_and_encrypt(self, text)
 
+	def EncryptWithRandomPad(self, plaintext):
+		"""Prepends a random count of random bytes to the plaintext
+		before encrypting. The number of bytes and the bytes themselves
+		are generated in the constructor."""
+		text = self.randomPrefix + plaintext + self.filler
 		return AESCipher.aes_pad_and_encrypt(self, text)

@@ -112,7 +112,7 @@ def BreakECB(enc, block_size):
 					broken_text += bytes([n])
 					break
 
-	# Chop to known size otherwise we also returned the random padding at the end.
+	# Chop to known size otherwise we also return the random padding at the end.
 	return broken_text[:num_secret_blocks * block_size]
 
 
