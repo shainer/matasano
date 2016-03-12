@@ -6,15 +6,24 @@ class MersenneTwister(object):
 	# the cycle begins anew).
 	N = 624
 
-	def __init__(self, seed):
+	def __init__(self, seed, injectedState=None):
+		"""If an injected state is defined, we put that into the state array
+		and set the index to 0. Otherwise, we generate a new proper state from
+		the seed and twist it when required."""
 		self.index = self.N
 		self.state = [0] * self.index
-		self.state[0] = seed
 
-		for i in range(1, self.index):
-			self.state[i] = int(
-				1812433253 * (self.state[i - 1] ^ (self.state[i - 1] >> 30))
-				+ i) & 0xFFFFFFFF
+		if injectedState is None:
+			self.state[0] = seed
+
+			for i in range(1, self.index):
+					self.state[i] = int(
+						1812433253 * (self.state[i - 1] ^ (self.state[i - 1] >> 30))
+						+ i) & 0xFFFFFFFF
+
+		else:
+			self.state = injectedState
+			self.index = 0
 
 	def randomNumber(self):
 		if self.index >= self.N:
@@ -45,6 +54,7 @@ class MersenneTwister(object):
 		    if y % 2 != 0:
 		        self.state[i] = self.state[i] ^ 0x9908b0df
 		self.index = 0
+
 
 if __name__ == '__main__':
 	print('[**] Let\'s generate a few numbers.')
