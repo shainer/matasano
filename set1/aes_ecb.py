@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 import base64
 from Crypto.Cipher import AES
@@ -22,4 +22,4 @@ if __name__ == '__main__':
 		ciphertext = input_file.read()
 
 	aes = AESCipher(b'YELLOW SUBMARINE')
-	print aes.aes_decrypt(base64.b64decode(ciphertext))
+	print(aes.aes_decrypt(base64.b64decode(ciphertext)).decode('ascii'))
