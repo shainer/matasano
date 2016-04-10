@@ -1,5 +1,7 @@
 #!/usr/bin/python3
 
+from Crypto.Cipher import AES
+
 def BlockXOR(b1, b2):
 	"""XOR of two blocks of bytes. b2 is allowed to be longer
 	than b1, the extra bytes will simply be ignored."""
