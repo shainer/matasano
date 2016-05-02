@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 import base64
 import encode_xor
 import decode_xor
