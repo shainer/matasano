@@ -39,26 +39,34 @@ def GetRealDigest(message):
 if __name__ == '__main__':
 	message = b'comment1=cooking%20MCs;userdata=foo;comment2=%20like%20a%20pound%20of%20bacon'
 	secretHash = Sha1Sign(message)
-	decimalHash = int(secretHash, 16)
 
-	forgedPart = b';admin=true'
+	# Even if we try all possibilities up to 10.000, the loop only
+	# takes a few seconds, so brute force works here. Secret keys are
+	# also generally smaller than 10.000 bytes.
+	for keyLen in range(1, 10000):
+		decimalHash = int(secretHash, 16)
+		forgedPart = b';admin=true'
 
-	# The new message length is the length of the key + the
-	# original message + the artificial padding glue + the
-	# part we added ourselves.
-	glue = makeGluePadding(message, 16)
-	# After the forget part, the SHA1 algorithm may add more
-	# padding, but that happens internally so we do not need
-	# to factor its length here.
-	fakeLen = 16 + len(message) + len(glue) + len(forgedPart)
+		# The new message length is the length of the key + the
+		# original message + the artificial padding glue + the
+		# part we added ourselves.
+		glue = makeGluePadding(message, keyLen)
+		# After the forget part, the SHA1 algorithm may add more
+		# padding, but that happens internally so we do not need
+		# to factor its length here.
+		fakeLen = keyLen + len(message) + len(glue) + len(forgedPart)
 
-	# Create a SHA1 object with our how H vector. This allows us
-	# to extend the hash from where we started.
-	h = RecoverInternalState(decimalHash)
-	sha1 = Sha1Hash(h)
-	digest = sha1.digest(b';admin=true', fakeLen)
-	realThing = GetRealDigest(message + glue + forgedPart)
+		# Create a SHA1 object with our how H vector. This allows us
+		# to extend the hash from where we started.
+		h = RecoverInternalState(decimalHash)
+		sha1 = Sha1Hash(h)
+		digest = sha1.digest(b';admin=true', fakeLen)
+		realThing = GetRealDigest(message + glue + forgedPart)
 
-	# We expect them to be equal for the attack to succeed.
-	print(digest)
-	print(realThing)
+		if digest == realThing:
+			print('[**] We did it')
+			print(digest)
+			print('Key length was', keyLen)
+			break
+	else:
+		print('Nothing found for key lengths up to 1000 bytes')
