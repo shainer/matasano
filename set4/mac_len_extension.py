@@ -69,4 +69,4 @@ if __name__ == '__main__':
 			print('Key length was', keyLen)
 			break
 	else:
-		print('Nothing found for key lengths up to 1000 bytes')
+		print('Nothing found for key lengths up to 10000 bytes')
