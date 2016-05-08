@@ -6,8 +6,9 @@ import hashlib
 # Based on the pseudocode on the Wikipedia page:
 # https://en.wikipedia.org/wiki/SHA-1#SHA-1_pseudocode
 class Sha1Hash(object):
-	def __init__(self):
-		self._h = []
+	# Allows to inject a h vector, for length-extension attacks.
+	def __init__(self, initial_h=None):
+		self._h = initial_h
 
 	def _leftRotate(self, n, bits):
 		"""Rotates a 32-bit integer by |bits| bits."""
@@ -62,19 +63,23 @@ class Sha1Hash(object):
 		self._h[3] = (self._h[3] + d) & 0xffffffff
 		self._h[4] = (self._h[4] + e) & 0xffffffff
 
-	def digest(self, inputBytes):
+	# Computes the SHA1 digest of inputBytes. For length-extension attacks,
+	# we may want to inject the message length. Otherwise, we use the legit
+	# length of the input.
+	def digest(self, inputBytes, fakeLen=None):
 		"""Computes the digest of a message, stored in inputBytes."""
 		# Initial state.
-		self._h = [
-			0x67452301,
-			0xEFCDAB89,
-			0x98BADCFE,
-			0x10325476,
-			0xC3D2E1F0,
-		]
+		if self._h is None:
+			self._h = [
+				0x67452301,
+				0xEFCDAB89,
+				0x98BADCFE,
+				0x10325476,
+				0xC3D2E1F0,
+			]
 
 		message = inputBytes
-		byteLength = len(message)
+		byteLength = len(message) if fakeLen is None else fakeLen
 
 		# Appends the bit '1' to the message.
 		message += b'\x80'
@@ -86,7 +91,7 @@ class Sha1Hash(object):
 		message += struct.pack(b'>Q', byteLength * 8)
 
 		# Processes each 64-bytes chunk separately.
-		for i in range(0, len(message), 64):
+		for i in range(0, int(len(message) / 64)):
 			chunk = message[i * 64 : (i+1) * 64]
 			self._processChunk(chunk)
 
