@@ -28,8 +28,8 @@ def _f1(a, b, c, d, k, s, X): return _left_rotate(a + _f(b, c, d) + X[k], s)
 def _f2(a, b, c, d, k, s, X): return _left_rotate(a + _g(b, c, d) + X[k] + 0x5a827999, s)
 def _f3(a, b, c, d, k, s, X): return _left_rotate(a + _h(b, c, d) + X[k] + 0x6ed9eba1, s)
 
+# Implementation of MD4 hashing.
 class MD4:
-
 	def __init__(self):
 		self.A = 0x67452301
 		self.B = 0xefcdab89
