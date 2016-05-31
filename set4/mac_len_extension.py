@@ -51,12 +51,12 @@ if __name__ == '__main__':
 		# original message + the artificial padding glue + the
 		# part we added ourselves.
 		glue = makeGluePadding(message, keyLen)
-		# After the forget part, the SHA1 algorithm may add more
+		# After the forged part, the SHA1 algorithm may add more
 		# padding, but that happens internally so we do not need
 		# to factor its length here.
 		fakeLen = keyLen + len(message) + len(glue) + len(forgedPart)
 
-		# Create a SHA1 object with our how H vector. This allows us
+		# Create a SHA1 object with our own H vector. This allows us
 		# to extend the hash from where we started.
 		h = RecoverInternalState(decimalHash)
 		sha1 = Sha1Hash(h)
