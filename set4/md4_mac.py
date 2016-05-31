@@ -108,6 +108,12 @@ class MD4:
 	def digest(self):
 		return binascii.hexlify(pack('<IIII', self.A, self.B, self.C, self.D))
 
+def Md4Sign(message):
+	h = Md4()
+	h.update(b'YELLOW SUBMARINE')
+	h.update(message)
+	return h.digest()
+
 # Quick verification of the algorithm by computing a few known
 # hashes.
 if __name__ == '__main__':
