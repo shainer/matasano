@@ -4,8 +4,8 @@ import binascii
 from array import array
 from struct import pack, unpack
 
-def _pad(msg):
-	n = len(msg)
+def _pad(msg, fakeLen):
+	n = len(msg) if fakeLen is None else fakeLen
 	bit_len = n * 8
 	index = (bit_len >> 3) & 0x3f
 
@@ -30,14 +30,20 @@ def _f3(a, b, c, d, k, s, X): return _left_rotate(a + _h(b, c, d) + X[k] + 0x6ed
 
 # Implementation of MD4 hashing.
 class MD4:
-	def __init__(self):
-		self.A = 0x67452301
-		self.B = 0xefcdab89
-		self.C = 0x98badcfe
-		self.D = 0x10325476
+	def __init__(self, internalState=None):
+		if internalState is None:
+			self.A = 0x67452301
+			self.B = 0xefcdab89
+			self.C = 0x98badcfe
+			self.D = 0x10325476
+		else:
+			self.A = internalState[0]
+			self.B = internalState[1]
+			self.C = internalState[2]
+			self.D = internalState[3]
 
-	def update(self, message_string):
-		msg_bytes = _pad(message_string)
+	def update(self, message_string, fakeLen=None):
+		msg_bytes = _pad(message_string, fakeLen)
 		for i in range(0, len(msg_bytes), 64):
 			self._compress(msg_bytes[i:i+64])
 
@@ -104,12 +110,17 @@ class MD4:
 		self.B = (self.B + b) & 0xffffffff
 		self.C = (self.C + c) & 0xffffffff
 		self.D = (self.D + d) & 0xffffffff
+		# print("Current state is ")
+		# print(self.A)
+		# print(self.B)
+		# print(self.C)
+		# print(self.D)
 
 	def digest(self):
 		return binascii.hexlify(pack('<IIII', self.A, self.B, self.C, self.D))
 
-def Md4Sign(message):
-	h = Md4()
+def MD4Sign(message):
+	h = MD4()
 	h.update(b'YELLOW SUBMARINE')
 	h.update(message)
 	return h.digest()
