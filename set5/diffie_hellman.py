@@ -6,7 +6,7 @@ import random
 # Taken from
 # http://stackoverflow.com/questions/5486204/fast-modulo-calculations-in-python-and-ruby
 # Required because any regular library blows up computing this with such huge numbers.
-def modexp ( g, u, p ):
+def modexp(g, u, p):
    """Computes s = (g ^ u) mod p
    Args are base, exponent, modulus
    (see Bruce Schneier's book, _Applied Cryptography_ p. 244)
