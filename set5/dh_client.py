@@ -28,7 +28,7 @@ def VerifyKey(socket, secret):
 	ciphertext = cipher.encrypt(message)
 	socket.send(ciphertext)
 
-def GoodExchange(serverHost, port):
+def DHExchangeClient(serverHost, port):
 	sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 	sock.connect((serverHost, port))
 
@@ -72,10 +72,8 @@ if __name__ == '__main__':
 
 	mode = sys.argv[1]
 	if mode == 'good':
-		GoodExchange('localhost', 10000)
+		DHExchangeClient('localhost', 10000)
 	elif mode == 'bad':
-		pass
-		# Not yet supported, coming soon!
-		#BadExchange('localhost', 10001)
+		DHExchangeClient('localhost', 10002)
 	else:
 		print('Cannot recognize mode:', mode)
