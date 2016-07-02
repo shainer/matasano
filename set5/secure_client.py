@@ -34,6 +34,9 @@ def SRPSetup(sock, email, password, isClientGood):
 		# Sending this means that S = 0 server-side, since
 		# A is the base of the modexp computing S, so all the
 		# other parameters get ignored.
+		# The other tweaking proposed, A = N or A = kN, have the
+		# exact same effect, since you compute S = (A ** x) % A
+		# which is equal to 0 no matter what 'x' is.
 		A = 0
 
 	message = (str(A) + '\n').encode()
