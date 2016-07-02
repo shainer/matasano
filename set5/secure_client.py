@@ -14,7 +14,9 @@ def ReadUntilNewline(clientsocket):
 
 	return data[:-1]
 
-def SRPSetup(sock, email, password):
+# If isClientGood == True, we do SRP for real (Challenge 36).
+# Otherwise, we break the exchange as per Challenge 37.
+def SRPSetup(sock, email, password, isClientGood):
 	g = 2
 	k = 3
 	N = int('ffffffffffffffffc90fdaa22168c234c4c6628b80dc1cd129024e088a67cc74020bbea63b139b22514a08798e340'
@@ -25,7 +27,14 @@ def SRPSetup(sock, email, password):
 	sock.send(email.encode() + b'\n')
 
 	a = random.randint(0, 10000)
-	A = dh.modexp(g, a, N)
+
+	if isClientGood:
+		A = dh.modexp(g, a, N)
+	else:
+		# Sending this means that S = 0 server-side, since
+		# A is the base of the modexp computing S, so all the
+		# other parameters get ignored.
+		A = 0
 
 	message = (str(A) + '\n').encode()
 	sock.send(message)
@@ -43,9 +52,18 @@ def SRPSetup(sock, email, password):
 	sha.update(password.encode())
 	x = int(sha.hexdigest(), 16)
 
-	exp = (a + u * x)
-	base = (int(B) - k * dh.modexp(g, x, N))
-	S = dh.modexp(base, exp, N)
+	if isClientGood:
+		exp = (a + u * x)
+		base = (int(B) - k * dh.modexp(g, x, N))
+		S = dh.modexp(base, exp, N)
+	else:
+		# If we have been bad, we know the server has computed S = 0,
+		# so we do the same on our side. We could also avoid computing
+		# a bunch of other parameters before (namely, x and u).
+		# At this point the secret is independent of which password
+		# we send to the server, so we can send an empty one and still
+		# be accepted as good users.
+		S = 0
 
 	sha = hashlib.sha256()
 	sha.update(str(S).encode())
@@ -54,12 +72,20 @@ def SRPSetup(sock, email, password):
 	return K, salt
 
 if __name__ == '__main__':
+	isGoodMode = True
+
+	if len(sys.argv) > 1:
+		if sys.argv[1] == 'good':
+			isGoodMode = True
+		elif sys.argv[1] == 'bad':
+			isGoodMode = False
+
 	sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 	sock.connect(('localhost', 10000))
 
 	email = input('[**] Enter email address: ')
 	password = input('[**] Enter password: ')
-	K, salt = SRPSetup(sock, email, password)
+	K, salt = SRPSetup(sock, email, password, isGoodMode)
 
 	sha = hashlib.sha256()
 	sha.update(salt)
