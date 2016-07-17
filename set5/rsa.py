@@ -63,7 +63,6 @@ def GenerateRSAPair():
 	totient =  n - (p + q - 1)
 	e = FindSmallerCoprime(totient)
 	d = invmod(e, totient)
-	#d = gmpy2.invert(e, totient)
 
 	return (e, n), (d, n)
 
