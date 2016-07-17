@@ -55,10 +55,7 @@ def FindSmallerCoprime(n):
 
 	raise ValueError('Could not find coprime')
 
-def GenerateRSAPair():
-	p = 61
-	q = 53
-
+def GenerateRSAPair(p, q):
 	n = p * q
 	totient =  n - (p + q - 1)
 	e = FindSmallerCoprime(totient)
@@ -75,7 +72,7 @@ def Decrypt(rsaKey, num):
 	return (num ** d) % n
 
 if __name__ == '__main__':
-	publicKey, privateKey = GenerateRSAPair()
+	publicKey, privateKey = GenerateRSAPair(61, 53)
 
 	num = 42
 	ciphertext = Encrypt(publicKey, num)
