@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
-from fractions import gcd
+import random
+from primes import getProbablePrime
 
 # Computes the GCD between two numbers using the extended Euclidean formulation.
 # This means we find solutions to this equation:
@@ -32,7 +33,7 @@ def egcd(a, b):
 # ring of integers modulo m, called Zm.
 # Such an inverse exists only if a and m are coprime, so their gcd is 1.
 #
-# Let's see how to use the extended Euclidean algortihm to find the invmod.
+# Let's see how to use the extended Euclidean algortihm to find the invmod.a
 # We find solutions to the Bezout's identity:
 #  ax + by = gcd(a, b)
 # If ax = 1 (mod m), this implies that m is a divisor of ax-1. Therefore:
@@ -59,6 +60,28 @@ def GenerateRSAPair(p, q):
 	n = p * q
 	totient =  n - (p + q - 1)
 	e = FindSmallerCoprime(totient)
+	d = invmod(e, totient)
+
+	return (e, n), (d, n)
+
+# For the E=3 broadcast attack, we follow a different path: we fix
+# e=3 and then compute p and q as two large primes such that the
+# totient is coprime with e; this means that both p-1 and q-1 need
+# to be coprime with e; if this is not satisfied the invmod won't
+# exist.
+def GenerateRSAPairBroadcast(p, q):
+	e = 3
+	p = 7
+	while (p - 1) % e == 0:
+		# Large primes for the win!
+		p = getProbablePrime(256)
+
+	q = p
+	while q == p or (q - 1) % e == 0:
+		q = getProbablePrime(256)
+
+	n = p * q
+	totient = (p - 1) * (q - 1)
 	d = invmod(e, totient)
 
 	return (e, n), (d, n)
