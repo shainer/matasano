@@ -95,7 +95,7 @@ def _digits_of_n(n, b):
         n /= b
     return digits
 
-def dsa_sign(q, p, g, x, message):
+def dsa_sign(q, p, g, x, message, k=None):
     """
     Create a DSA signature of a message
     using the private part of a DSA keypair.
@@ -106,6 +106,11 @@ def dsa_sign(q, p, g, x, message):
     * http://www.herongyang.com/Cryptography/DSA-Introduction-Algorithm-Illustration-p23-q11.html
     * https://en.wikipedia.org/wiki/Digital_Signature_Algorithm
     * http://www.docjar.org/html/api/org/bouncycastle/crypto/
+
+    We add the option to inject a k to verify whether we have broken it
+    correctly (see dsa_nonce). If none is passed, we generate a random
+    one as per original specification.
+
     >>> import hashlib
     >>> import dsa
     >>> m = hashlib.sha1()
@@ -130,7 +135,11 @@ def dsa_sign(q, p, g, x, message):
     :param message: message to sign
     :return: DSA signature (s1,s2) sometimes called (r,s)
     """
-    s = _random_s(1, q)
+    if k is None:
+        s = _random_s(1, q)
+    else:
+        s = k
+
     s1 = 0
     s2 = 0
     while True:
