@@ -17,7 +17,7 @@ def HashMessage(messageBytes):
 	return H
 
 # Finds the solution in around 16 seconds.
-def BreakRSA(p, g, q, r, s):
+def BreakDSA(p, g, q, r, s):
 	publicKey = int('0x84ad4719d044495496a3201c8ff484feb45b962e7302e56a392aee4abab3e4bdebf2955b4736012f21a08084056b19bcd7fee56048e004e44984e2f411788efdc837a0d2e5abb7b555039fd243ac01f0fb2ed1dec568280ce678e931868d23eb095fde9d3779191b8c0299d6e07bbb283e6633451e535c45513b2d33c99ea17', 16)
 
 	m = hashlib.sha1()
@@ -62,7 +62,7 @@ if __name__ == '__main__':
     # To verify we have found the right k and private key, we sign the same message
     # using both of them. If the signatures match with the one we got from the
     # challenge, it is correct.
-	brokenKey, brokenK = BreakRSA(dsa_params['P'], dsa_params['G'], dsa_params['Q'], r, s)
+	brokenKey, brokenK = BreakDSA(dsa_params['P'], dsa_params['G'], dsa_params['Q'], r, s)
 	sig = dsa.dsa_sign(dsa_params['Q'], dsa_params['P'], dsa_params['G'], brokenKey,
 					   HashMessage(message), k=brokenK)
 
