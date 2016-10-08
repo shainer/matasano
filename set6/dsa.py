@@ -1,7 +1,20 @@
 # Inspired from the implementation at
 # https://github.com/rrottmann/pydsa.
 
+import hashlib
 import random
+
+def HashMessage(messageBytes):
+    """Computes a SHA1 of a message, expressed a bytes,
+    and converts the digest to an integer. This makes it
+    suitable to be signed/verified by DSA.
+    """
+    m = hashlib.sha1()
+    m.update(messageBytes)
+    digest = m.hexdigest()
+
+    H = int('0x' + digest, 16)
+    return H
 
 def _random_s(minNumber, maxNumber):
     """
@@ -69,6 +82,9 @@ def modexp(g, u, p):
    Args are base, exponent, modulus
    (see Bruce Schneier's book, _Applied Cryptography_ p. 244)
    """
+   if g == 0:
+    return 0
+
    s = 1
    while u != 0:
       if u & 1:
@@ -77,6 +93,11 @@ def modexp(g, u, p):
       g = (g * g) % p
    return s
 
+def generate_pair(p, g, q):
+    """Generates a private key and public key, in this order."""
+    x = _random_s(1, q - 1)
+    y = modexp(g, x, p)
+    return x, y
 
 def _digits_of_n(n, b):
     """

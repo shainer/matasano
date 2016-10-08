@@ -1,28 +1,14 @@
 #!/usr/bin/python3
 
-import hashlib
 import dsa
 import rsa
-
-def HashMessage(messageBytes):
-	"""Computes a SHA1 of a message, expressed a bytes,
-	and converts the digest to an integer. This makes it
-	suitable to be signed/verified by DSA.
-	"""
-	m = hashlib.sha1()
-	m.update(messageBytes)
-	digest = m.hexdigest()
-
-	H = int('0x' + digest, 16)
-	return H
 
 # Finds the solution in around 16 seconds.
 def BreakDSA(p, g, q, r, s):
 	publicKey = int('0x84ad4719d044495496a3201c8ff484feb45b962e7302e56a392aee4abab3e4bdebf2955b4736012f21a08084056b19bcd7fee56048e004e44984e2f411788efdc837a0d2e5abb7b555039fd243ac01f0fb2ed1dec568280ce678e931868d23eb095fde9d3779191b8c0299d6e07bbb283e6633451e535c45513b2d33c99ea17', 16)
 
-	m = hashlib.sha1()
-	H = HashMessage(b'For those that envy a MC it can be hazardous to your health\n'
-			        b'So be friendly, a matter of life and death, just like a etch-a-sketch\n')
+	H = dsa.HashMessage(b'For those that envy a MC it can be hazardous to your health\n'
+			        	b'So be friendly, a matter of life and death, just like a etch-a-sketch\n')
 
 	k = 0
 	brokenKey = None
@@ -64,7 +50,7 @@ if __name__ == '__main__':
     # challenge, it is correct.
 	brokenKey, brokenK = BreakDSA(dsa_params['P'], dsa_params['G'], dsa_params['Q'], r, s)
 	sig = dsa.dsa_sign(dsa_params['Q'], dsa_params['P'], dsa_params['G'], brokenKey,
-					   HashMessage(message), k=brokenK)
+					   dsa.HashMessage(message), k=brokenK)
 
 	if sig == (r, s):
 		print('[**] The signatures (with real and broken private key) match!')
