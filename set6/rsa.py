@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 import random
+from utils import modexp
 from primes import getProbablePrime
 
 # Computes the GCD between two numbers using the extended Euclidean formulation.
@@ -56,46 +57,34 @@ def FindSmallerCoprime(n):
 
 	raise ValueError('Could not find coprime')
 
-def GenerateRSAPair(p, q):
-	n = p * q
-	totient =  n - (p + q - 1)
-	e = FindSmallerCoprime(totient)
-	d = invmod(e, totient)
+def GenerateRSAPair(keysize):
+	"""Generates a RSA key pair given the size in bits."""
+	e = 3  # we know this is not a good choice, but it works here :D
+	bitcount = (keysize + 1) // 2 + 1
 
-	return (e, n), (d, n)
-
-# For the E=3 broadcast attack, we follow a different path: we fix
-# e=3 and then compute p and q as two large primes such that the
-# totient is coprime with e; this means that both p-1 and q-1 need
-# to be coprime with e; if this is not satisfied the invmod won't
-# exist.
-def GenerateRSAPairBroadcast(p, q):
-	e = 3
 	p = 7
 	while (p - 1) % e == 0:
-		# Large primes for the win!
-		p = getProbablePrime(256)
+ 		p = getProbablePrime(bitcount)
 
 	q = p
 	while q == p or (q - 1) % e == 0:
-		q = getProbablePrime(256)
+		q = getProbablePrime(bitcount)
 
 	n = p * q
-	totient = (p - 1) * (q - 1)
-	d = invmod(e, totient)
-
-	return (e, n), (d, n)
+	et = (p - 1) * (q - 1)
+	d = invmod(e, et)
+	return ((e, n), (d, n))
 
 def Encrypt(rsaKey, num):
 	e, n = rsaKey
-	return (num ** e) % n
+	return modexp(num, e, n)
 
 def Decrypt(rsaKey, num):
 	d, n = rsaKey
-	return (num ** d) % n
+	return modexp(num, d, n)
 
 if __name__ == '__main__':
-	publicKey, privateKey = GenerateRSAPair(61, 53)
+	publicKey, privateKey = GenerateRSAPair(1024)
 
 	num = 42
 	ciphertext = Encrypt(publicKey, num)

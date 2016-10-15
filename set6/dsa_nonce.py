@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 import dsa
+from utils import modexp
 import rsa
 
 # Finds the solution in around 16 seconds.
@@ -20,7 +21,7 @@ def BreakDSA(p, g, q, r, s):
 
 		# Derive the public key from the private key and compare it
 		# with the one we know.
-		testPub = dsa.modexp(g, privateKey, p)
+		testPub = modexp(g, privateKey, p)
 		if testPub == publicKey:
 			brokenKey = privateKey
 			break
