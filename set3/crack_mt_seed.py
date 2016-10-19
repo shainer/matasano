@@ -25,6 +25,14 @@ def RandWithTimestampedSeed():
 # The other option is to perform the Mersenne Twister computation
 # in reverse to return from the generated number to the seed, since
 # the algorithm and parameters are common knowledge anyway.
+#
+# UPDATE! I have researched this in more details, and it seems the
+# relationship between the seed and the first generated number is
+# not 1:1, but rather there are multiple (similar) seeds that can
+# give rise to the same initial number. So inversion will find one
+# such seed, but it's not guaranteed to be the one you actually used.
+# A few tries shows that the first 3 digits are correct, but the
+# rest may not be.
 def CrackSeed(generatedNumber):
 	currentTime = int(time.time())
 
