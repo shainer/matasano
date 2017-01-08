@@ -82,15 +82,22 @@ def FindCollisionOneStage(allPossibleBlocks, initialState):
 	# Nothing found.
 	return (b'', collisions)
 
-def FindCollisions(allPossibleBlocks, stateLen, n):
+def FindCollisions(stateLen, n):
 	"""Finds n collisions for the given hashing functions.
 
-	- allPossibleBlocks is a list of all possible 16-byte blocks. We'll use
-	  here to find single colliding blocks.
 	- statelen is the length of the hashes.
 	- n is the number of collisions we want to find. It works better when it's
 	a power of 2.
 	"""
+	# Prepare by generating all possible blocks, i.e. all possible
+	# byte strings of 16 bytes. We use this inside FindCollisionOneStage, but
+	# we only generate it once here.
+	allBytes = range(2 ** 8)
+	allPossibleBlocks = []
+	for comb in itertools.combinations(allBytes, stateLen):
+		byteString = b''.join(x.to_bytes(1, 'little') for x in comb)
+		allPossibleBlocks.append(byteString)
+
 	perStageCollisions = []
 	currentState = b'I\xbf'
 
@@ -136,13 +143,7 @@ def VerifyCollisions(collisions):
 if __name__ == '__main__':
 	stateLen = 2
 
-	allBytes = range(2 ** 8)
-	allPossibleBlocks = []
-	for comb in itertools.combinations(allBytes, stateLen):
-		byteString = b''.join(x.to_bytes(1, 'little') for x in comb)
-		allPossibleBlocks.append(byteString)
-
-	collisions = FindCollisions(allPossibleBlocks, stateLen, 8)
+	collisions = FindCollisions(stateLen, 8)
 	if VerifyCollisions(collisions):
 		print('[**] First scenario of challenge 52: found several collisions.')
 		print(collisions)
