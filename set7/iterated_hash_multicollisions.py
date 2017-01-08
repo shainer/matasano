@@ -29,7 +29,7 @@ def GenerateAllCollisions(perStageCollisions, result, i=0, partial=b''):
 		newPartial = partial + piece
 		GenerateAllCollisions(perStageCollisions, result, i+1, newPartial)
 
-def MerkleDamgard(message, state=b'\x00\x00', stateLen=2):
+def MerkleDamgard(message, state=b'I\xbf', stateLen=2):
 	"""Applies an arbitrary Merkle-Damgard construction to the message.
 
 	The default state length and initial state are those used all over
@@ -82,7 +82,6 @@ def FindCollisionOneStage(allPossibleBlocks, initialState):
 	# Nothing found.
 	return (b'', collisions)
 
-
 def FindCollisions(allPossibleBlocks, stateLen, n):
 	"""Finds n collisions for the given hashing functions.
 
@@ -93,7 +92,7 @@ def FindCollisions(allPossibleBlocks, stateLen, n):
 	a power of 2.
 	"""
 	perStageCollisions = []
-	currentState = b'\x00\x00'
+	currentState = b'I\xbf'
 
 	# The first step is finding collisions at stage 1. Then the shared hash
 	# of this collision is used at the next stage, and we find two more colliding
@@ -145,7 +144,7 @@ if __name__ == '__main__':
 
 	collisions = FindCollisions(allPossibleBlocks, stateLen, 8)
 	if VerifyCollisions(collisions):
-		print('[**] Found several collisions.')
+		print('[**] First scenario of challenge 52: found several collisions.')
 		print(collisions)
 	else:
 		print('[**] Nope, not real.')
