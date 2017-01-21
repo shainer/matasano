@@ -82,7 +82,7 @@ def FindCollisionOneStage(allPossibleBlocks, initialState):
 	# Nothing found.
 	return (b'', collisions)
 
-def FindCollisions(stateLen, n):
+def FindCollisions(stateLen, n, initialState):
 	"""Finds n collisions for the given hashing functions.
 
 	- statelen is the length of the hashes.
@@ -99,7 +99,7 @@ def FindCollisions(stateLen, n):
 		allPossibleBlocks.append(byteString)
 
 	perStageCollisions = []
-	currentState = b'I\xbf'
+	currentState = initialState
 
 	# The first step is finding collisions at stage 1. Then the shared hash
 	# of this collision is used at the next stage, and we find two more colliding
@@ -127,12 +127,12 @@ def FindCollisions(stateLen, n):
 	GenerateAllCollisions(perStageCollisions, collisions)
 	return collisions
 
-def VerifyCollisions(collisions):
+def VerifyCollisions(collisions, initialState):
 	"""Verifies all the collisions in the input list."""
 	sharedH = None
 
 	for c in collisions:
-		h = MerkleDamgard(padPKCS7(c))
+		h = MerkleDamgard(padPKCS7(c), initialState)
 		if sharedH is None:
 			sharedH = h
 		elif sharedH != h:
@@ -143,8 +143,8 @@ def VerifyCollisions(collisions):
 if __name__ == '__main__':
 	stateLen = 2
 
-	collisions = FindCollisions(stateLen, 8)
-	if VerifyCollisions(collisions):
+	collisions = FindCollisions(stateLen, 8, b'I\xbf')
+	if VerifyCollisions(collisions, b'I\xbf'):
 		print('[**] First scenario of challenge 52: found several collisions.')
 		print(collisions)
 	else:
