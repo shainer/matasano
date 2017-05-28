@@ -101,3 +101,50 @@ def BinToAscii(bin_string):
 		ascii += chr(num_piece)
 
 	return (ascii, is_readable)
+
+def Base64ToBin(text64):
+	"""Converts a base64-encoded string into a binary string."""
+	text = base64.b64decode(text64)
+	bin_text = ''
+
+	for ch in text:
+		# We remove the leading '0b' added by bin()
+		bin_ch = bin(ch)[2:]
+
+		# Each 'ch' is a decimal ASCII character, so the resulting
+		# binary number must have 8 digits. We pad with zeroes when
+		# shorter.
+		while len(bin_ch) < 8:
+			bin_ch = '0' + bin_ch
+
+		bin_text += bin_ch
+
+	return bin_text
+
+
+def Base64ToAscii(text64):
+	"""Converts a base64-encoded string into an ASCII string."""
+	text = base64.b64decode(text64)
+	ascii_text = ''
+
+	# The loop gives us the (decimal) ASCII number for each character,
+	# so we only need to convert it to an actual character.
+	for ch in text:
+		ascii_text += chr(ch)
+
+	return ascii_text
+
+def HammingDistance(b1, b2):
+	"""Computes the Hamming distance between two binary strings.
+
+	No verification is done on the strings (I am lazy), so use
+	at your own risk.
+	"""
+	assert len(b1) == len(b2)
+	distance = 0
+
+	for i in range(len(b1)):
+		if b1[i] != b2[i]:
+			distance += 1
+
+	return distance

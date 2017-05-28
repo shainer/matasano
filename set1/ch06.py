@@ -1,11 +1,12 @@
 #!/usr/bin/python3
+
+# Set 1, challenge 6: break repeating-key XOR
+
 import base64
 import encode_xor
 import decode_xor
 
-import sys
-sys.path.insert(0, '/home/shainer/source/matasano/lib')
-import utils
+from utils import encoding_utils as enclib
 
 def findKey(bin_text, keysize):
 	"""Try to find the encoding key of given size for bin_text.
@@ -47,7 +48,7 @@ def findKey(bin_text, keysize):
 		if not decodings:
 			return ''
 		
-		ascii_res = utils.bin_to_ascii(decodings[0][1])
+		ascii_res = enclib.BinToAscii(decodings[0][1])
 
 		# Unreadable ASCII.
 		if not ascii_res[1]:
@@ -89,7 +90,7 @@ def NormalizedHammingDistance(bin_text, keysize):
 		chunk1 = bin_text[start_block_index : start_block_index + keysize*8]
 		chunk2 = bin_text[start_block_index + keysize*8 : start_block_index + keysize*16]
 
-		hamming_distance += utils.HammingDistance(chunk1, chunk2)
+		hamming_distance += enclib.HammingDistance(chunk1, chunk2)
 		start_block_index += (keysize * 16)
 
 	# The normalized distance is the Hamming distance divided by the
@@ -112,7 +113,7 @@ def sortKeysizes(bin_text, min_keysize, max_keysize):
 		key = lambda x : keysizes_with_distance[x])
 
 def breakXOR(text, min_keysize, max_keysize):
-	bin_text = utils.base64_to_bin(text)
+	bin_text = enclib.Base64ToBin(text)
 
 	keysizes = sortKeysizes(bin_text, min_keysize, max_keysize)
 	print('[**] Keysizes: ', str(keysizes))
@@ -137,5 +138,4 @@ if __name__ == "__main__":
 
 		encoder = encode_xor.XOREncoder()
 		print(encoder.EncodeAsAscii(
-			utils.base64_to_ascii(encrypted_text), key))
-
+			enclib.Base64ToAscii(encrypted_text), key))
