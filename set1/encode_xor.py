@@ -1,13 +1,7 @@
-
-# I should really rewrite this in C++. If anyone is reading this
-# code I am sorry.
 import sys
-sys.path.insert(0, '/home/shainer/source/matasano/lib')
-import utils
+from utils import encoding_utils as enclib
 
 class XOREncoder(object):
-	def __init__(self):
-		pass
 
 	def _ByteToPaddedBin(self, byte):
 		bin_str = '{0:b}'.format(byte)
@@ -49,12 +43,12 @@ class XOREncoder(object):
 	def Encode(self, text, key):
 		"""The result is the string as hexadecimals."""
 		bin_result = self._DoEncode(text, key)
-		return utils.bin_to_hex(bin_result)
+		return enclib.BinToHex(bin_result)
 
 	def EncodeAsAscii(self, text, key):
 		"""The result is an ASCII string."""
 		bin_result = self._DoEncode(text, key)
-		ascii_result = utils.bin_to_ascii(bin_result)
+		ascii_result = enclib.BinToAscii(bin_result)
 
 		# Output is not ASCII readable, discarding the result.
 		if not ascii_result[1]:
