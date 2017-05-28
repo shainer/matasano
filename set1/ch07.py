@@ -1,5 +1,7 @@
 #!/usr/bin/python3
 
+# Set 1, challenge 7: AES in ECB mode.
+
 import base64
 from Crypto.Cipher import AES
 from Crypto import Random
