@@ -1,4 +1,4 @@
-#!/usr/bin/python
+# PKCS7 utilities: apply and strip padding to strings.
 
 def _Padding(string, blockSize):
 	"""Returns the amount of padding bytes we need to add."""
@@ -16,10 +16,6 @@ def Pkcs7(string, blockSize):
 		paddedString += bytes([numPadding])
 
 	return paddedString
-
-if __name__ == '__main__':
-	print(Pkcs7('YELLOW SUBMARINE', 20))
-
 
 def StripPkcs7(string, blockSize):
 	paddingFound = False
@@ -45,3 +41,4 @@ def StripPkcs7(string, blockSize):
 		raise Exception('Wrong padding applied.')
 
 	return string[:index+1]
+
