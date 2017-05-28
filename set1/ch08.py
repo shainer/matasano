@@ -1,5 +1,7 @@
 #!/usr/bin/python
 
+# Set 1, challenge 8: detect AES in ECB mode.
+
 import collections
 
 def CountRepeatedBlocks(hex_string):
@@ -38,6 +40,8 @@ if __name__ == '__main__':
 		if repeatedCount > 0:
 			repetitions[candidate] = repeatedCount
 
+	# The block we find here is not encrypted with the 'YELLOW SUBMARINE'
+	# key. I tried just in case there was a surprise :-)
 	for c in repetitions:
 		print (c + ' has ' + str(repetitions[c]) +
 			   ' block(s) repeated more than once.')
