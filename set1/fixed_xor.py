@@ -7,10 +7,7 @@ Contains implementations of fixed XOR and a few other utilities.
 # I should really rewrite this in C++. If anyone is reading this
 # code I am sorry.
 import sys
-sys.path.insert(0, '/home/shainer/source/matasano/lib')
 import utils
-
-import base64
 
 class Error(Exception):
 	pass
@@ -18,10 +15,6 @@ class Error(Exception):
 class InvalidArgumentError(Error):
 	pass
 
-
-def hex_to_base64(hex_string):
-	encoded = codecs.decode(hex_string, 'hex')
-	return base64.b64encode(encoded)
 
 def fixed_xor(s1, s2):
 	"""Computes the fixed XOR between two hexadecimal strings."""
