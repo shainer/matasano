@@ -79,3 +79,25 @@ def BinToHex(bin_string):
 		res_hex += BIN_TO_HEX_MAP[piece]
 
 	return res_hex
+
+def ReadableAscii(i):
+	return (i == 10 or (i > 31 and i < 127))
+
+def BinToAscii(bin_string):
+	"""Returns a tuple of 2 elements: first one is the ASCII decoding of
+	the binary string, second one is False if the decoding includes non-readable
+	characters."""
+	ascii = ''
+	is_readable = True
+
+	for i in range(0, len(bin_string) - 7, 8):
+		# Derive individual "slices" of the string, 8 bits each.
+		piece = bin_string[i:i+8]
+		# Convert to an integer.
+		num_piece = int(piece, base=2)
+
+		if not ReadableAscii(num_piece):
+			is_readable = False
+		ascii += chr(num_piece)
+
+	return (ascii, is_readable)

@@ -3,14 +3,10 @@ Decode an hexadecimal string that was XOR-encoded using a shorter key.
 """
 
 import itertools
-import fixed_xor
+from ch02 import FixedXORBins
 from plaintext_verifier import PlaintextVerifier
 
-# I should really rewrite this in C++. If anyone is reading this
-# code I am sorry.
-import sys
-sys.path.insert(0, '/home/shainer/source/matasano/lib')
-import utils
+from utils import encoding_utils as enclib
 import math
 
 class XORDecoder(object):
@@ -45,8 +41,8 @@ class XORDecoder(object):
 
 			# Computes the XOR between the string and the key. The result
 			# is again in binary form.
-			decoded_bin = fixed_xor.fixed_xor_bins(fixed_key, encoded_string)
-			ascii_candidate, is_valid_candidate = utils.bin_to_ascii(
+			decoded_bin = FixedXORBins(fixed_key, encoded_string)
+			ascii_candidate, is_valid_candidate = enclib.BinToAscii(
 				decoded_bin)
 
 			if not is_valid_candidate:
@@ -66,5 +62,5 @@ class XORDecoder(object):
 
 		Raises exceptions if the string is not in the expected format.
 		"""
-		bin_string = utils.hex_to_bin(encoded_string)
+		bin_string = enclib.HexToBin(encoded_string)
 		return self.DecodeBin(bin_string, frequency_only)
