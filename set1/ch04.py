@@ -1,5 +1,7 @@
 #!/usr/bin/python3
 
+# Set 1, challenge 4: detect single-character XOR.
+
 import decode_xor
 
 if __name__ == '__main__':
@@ -16,8 +18,8 @@ if __name__ == '__main__':
 
 		candidates = decoder.DecodeHex(string)
 
-		# We need at least one candidate. For now we assume there is
-		# exactly one.
 		if candidates:
-			print ('String ' + string + ' decoded to ' + candidates[0][0])
+			print('String %s decoded to \"%s\"'
+					% (string, candidates[0][0]))
+			break
 
