@@ -1,3 +1,5 @@
+# Library for AES utilities, used thorough the challenges.
+
 import base64
 from Crypto.Cipher import AES
 from Crypto import Random

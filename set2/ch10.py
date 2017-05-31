@@ -1,5 +1,7 @@
 #!/usr/bin/python3
 
+# Set 2, challenge 10: Implement CBC mode.
+
 import aes_lib
 import base64
 
@@ -14,4 +16,6 @@ if __name__ == '__main__':
 
 	# Decode the base64 ciphertext into a byte string.
 	byte_cipher = base64.b64decode(ciphertext)
+
+	# Note: this is where the actual code lives.
 	print (aes.SimulateCBCDecryption(byte_cipher).decode('ascii'))
