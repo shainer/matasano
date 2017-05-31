@@ -1,4 +1,6 @@
-#!/usr/bin/python
+#!/usr/bin/python3
+
+# Set 2, challenge 11: An ECB/CBC detection oracle.
 
 from Crypto.Cipher import AES
 from Crypto import Random
@@ -7,21 +9,17 @@ import aes_lib
 import collections
 import random
 
-def GenerateRandomBytes(size):
-	"""Random byte string of given size."""
-	return Random.new().read(size)
-
 def RandomEncrypt(plaintext):
 	"""Returns a tuple with the encrypted text and the mode used."""
 	# Random key.
-	key = GenerateRandomBytes(AES.block_size)
+	key = Random.new().read(AES.block_size)
 
 	# Random padding both before and after the plaintext. The
 	# size of the second padding cannot be random since the result
 	# needs to have a number of bytes multiple of 16.
 	paddingSize = random.randint(5, 10)
-	prepend = GenerateRandomBytes(paddingSize)
-	append = GenerateRandomBytes(AES.block_size - paddingSize)
+	prepend = Random.new().read(paddingSize)
+	append = Random.new().read(AES.block_size - paddingSize)
 
 	# Pick encryption mode at random.
 	mode = None
