@@ -1,5 +1,7 @@
 #!/usr/bin/python3
 
+# Set 2, challenge 13: ECB cut-and-paste
+
 import aes_lib
 from pkcs7 import Pkcs7
 from pkcs7 import StripPkcs7
