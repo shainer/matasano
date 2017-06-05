@@ -1,5 +1,7 @@
 #!/usr/bin/python3
 
+# Set 2, challenge 12: byte-at-a-time ECB decryption (simple).
+
 import aes_lib
 import base64
 import collections
@@ -8,8 +10,8 @@ from Crypto.Cipher import AES
 from Crypto import Random
 
 def CountRepeatedBlocks(byte_string, chunk_size):
-	"""Counts how many 16-bytes chunks in the string are
-	repeated more than once. The input is a byte string."""
+	"""Counts how many chunks of given size in the string are
+	repeated more than once.."""
 	chunk_start = 0
 
 	# New keys get a default value of 0. The dictionary will
