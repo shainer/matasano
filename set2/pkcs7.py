@@ -1,5 +1,7 @@
 # PKCS7 utilities: apply and strip padding to strings.
 
+# This also serves as solution for Set 2, Challenge 15.
+
 def _Padding(string, blockSize):
 	"""Returns the amount of padding bytes we need to add."""
 	if len(string) % blockSize == 0:

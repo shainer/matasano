@@ -1,7 +1,9 @@
 #!/usr/bin/python3
 
+# Set 2, challenge 14: byte-at-a-time ECB decryption (harder).
+
 import aes_lib
-import break_ecb
+import ch12
 import collections
 from Crypto.Cipher import AES
 
@@ -9,7 +11,7 @@ class NoValidPlaintextError(Exception):
 	pass
 
 # This is not affected by the presence of the random prefix, so
-# this is equivalent to the version in break_ecb.py, save for the
+# this is equivalent to the version in challenge 12, save for the
 # encryption method we call.
 def GetBlockSize(encrypter):
 	pad = b''
@@ -58,7 +60,7 @@ def GetRandomPrefixLen(enc, block_size):
 	# we had to add before succeeding is the length of the prefix.
 	while mode != AES.MODE_ECB:
 		ciphertext = enc.EncryptWithRandomPad(b'A' * textSize)
-		mode = break_ecb.DetectEncryptionMode(ciphertext, block_size)
+		mode = ch12.DetectEncryptionMode(ciphertext, block_size)
 		textSize += 1
 
 	return (block_size - (textSize - (block_size * 2)) + 1)
@@ -68,7 +70,7 @@ def BreakECB(enc, block_size, prefix_len):
 	"""Breaks this specific ECB oracle given the block size and the length
 	of the prefix computed before."""
 	broken_text = b''
-	num_secret_blocks = break_ecb.GetNumSecretBlocks(enc, block_size)
+	num_secret_blocks = ch12.GetNumSecretBlocks(enc, block_size)
 
 	# Once we know the prefix length, we add more padding so that our
 	# prefix now occupies whole blocks. At this point the algorithm is
@@ -82,7 +84,7 @@ def BreakECB(enc, block_size, prefix_len):
 	# List of ASCII readable bytes as decimal integers.
 	readable_bytes = [10] + list(range(32, 127))
 
-	# See break_ecb.py for the explanation of this algorithm; the only difference
+	# See ch12.py for the explanation of this algorithm; the only difference
 	# is that we ignore the first block(s) to avoid the random prefix.
 	for k in range(num_prefix_blocks, num_secret_blocks):
 		for b in range(block_size - 1, -1, -1):
@@ -120,13 +122,13 @@ if __name__ == '__main__':
 	# in the middle of a block rather than at the beginning. No fear,
 	# we'll just add a new one.
 	ciphertext = enc.EncryptWithRandomPad(b'A' * (block_size * 3))
-	mode = break_ecb.DetectEncryptionMode(ciphertext, block_size)
+	mode = ch12.DetectEncryptionMode(ciphertext, block_size)
 
 	if mode != AES.MODE_ECB:
 		print("[!!] Wrong encryption mode detected: " + str(mode))
 		exit(0)
 
-	print("[**] Detected mode is: " + break_ecb.ModeToString(mode))
+	print("[**] Detected mode is: " + ch12.ModeToString(mode))
 
 	prefix_len = GetRandomPrefixLen(enc, block_size)
 	print ('[**] Uncovered prefix length is ' + str(prefix_len))
