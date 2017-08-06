@@ -2,7 +2,9 @@
 
 import random
 import time
-from mersenne_twister import MersenneTwister
+from ch21 import MersenneTwister
+
+# Set 3, challenge 24: create the MT19937 stream cipher and break it.
 
 def BlockXor(completeText, stream):
 	"""Quick XOR between two bytes."""
