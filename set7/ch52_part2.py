@@ -4,7 +4,7 @@ from Crypto.Cipher import AES
 from Crypto.Cipher import Blowfish
 import math
 import itertools
-from iterated_hash_multicollisions import *
+from ch52 import *
 
 def F(message):
 	return MerkleDamgard(padPKCS7(message), state=b'\x07\x87', stateLen=2)
