@@ -11,9 +11,7 @@ The solution to [MD4 collisions](http://cryptopals.com/sets/7/challenges/55) fro
 This is due to me getting bored and moving to set 8 early. I plan to revisit it once I finish set 8, which
 might take a while.
 
-The solution to [challenge 20](http://cryptopals.com/sets/3/challenges/20) from set 3 is not present. This is
-because I forgot about it and moved on. I realized many months later when I went back to older challenges to
-do some renaming and general cleanup. I plan to fix that soon.
+Some other solutions in the middle are missing, most improvements over other challenges. I left them "for later" and forgot about them; now I noticed after some code cleanup, so I plan to add solutions soon.
 
 ## Walkthroughs
 
