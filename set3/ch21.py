@@ -1,5 +1,7 @@
 #!/usr/bin/python3
 
+# Set 3, challenge 20: Implement the MT19937 Mersenne Twister RNG.
+
 class MersenneTwister(object):
 	# Algorithm constants for MT19937.
 	# Degree of recurrence (after this many calls to randomNumber,
