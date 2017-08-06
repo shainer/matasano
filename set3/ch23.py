@@ -1,6 +1,8 @@
 #!/usr/bin/python3
 
-from mersenne_twister import MersenneTwister
+# Set 3, challenge 23: Clone a MT19937 RNG from its output
+
+from ch21 import MersenneTwister
 
 def Untemper(y):
     y = y ^ (y >> 18)
@@ -40,6 +42,8 @@ if __name__ == '__main__':
 	for i in range(0, 624):
 		realOutputs.append(realMt.randomNumber())
 
+	print('First 10 outputs of the real generator: %s' % (str(realOutputs[:10])))
+
 	# Reconstruct the internal state array from the random outputs.
 	state = FindStateFromOutputs(realOutputs)
 	clonedMt = MersenneTwister(seed=10, injectedState=state)
@@ -49,6 +53,8 @@ if __name__ == '__main__':
 	# from the cloned generator.
 	for i in range(0, 624):
 		clonedOutputs.append(clonedMt.randomNumber())
+
+	print('First 10 outputs of the cloned generator: %s' % (str(clonedOutputs[:10])))
 
 	# If the match, success.
 	if realOutputs == clonedOutputs:
