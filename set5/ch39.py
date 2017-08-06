@@ -3,6 +3,8 @@
 import random
 from primes import getProbablePrime
 
+# Set 5, challenge 39: Implement RSA.
+
 # Computes the GCD between two numbers using the extended Euclidean formulation.
 # This means we find solutions to this equation:
 #  a*x + b*y = gcd(x, y)

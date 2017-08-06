@@ -1,7 +1,9 @@
 #!/usr/bin/python3
 
 import math
-import rsa
+import ch39 as rsa
+
+# Set 5, challenge 40: Implement a e=3 RSA broadcast attack.
 
 def BreakRSA(C, N):
 	n12 = N[1] * N[2]
