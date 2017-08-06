@@ -3,6 +3,8 @@
 import random
 import rsa
 
+# Set 6, challenge 41: Implement unpadded message recovery oracle.
+
 # Implements our "bad" server for the challenge. It stores all
 # ciphertexts it sees and raises an error if asked to decrypt
 # a ciphertext more than once.
@@ -73,7 +75,7 @@ def Reveal(text, publicKey):
 
 
 if __name__ == '__main__':
-	publicKey, privateKey = rsa.GenerateRSAPair(61, 53)
+	publicKey, privateKey = rsa.GenerateRSAPair(128)
 	oracle = Oracle(privateKey)
 
 	ciphertexts = GetCiphertexts(publicKey)
