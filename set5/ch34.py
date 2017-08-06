@@ -6,14 +6,12 @@ from Crypto.Cipher import AES
 import random
 import socket
 
-# This contains all the three attacks for Challenge 35.
-# I should have a command line parameter for deciding
-# which one to apply.
+# Set 5, challenge 34: Implement a MITM key-fixing attack on Diffie-Hellman with parameter injection.
 
-# Common code factored out.
-def ReadOtherParameters(clientsocket):
+def DHExchangeBadServer(clientsocket, mysocket):
 	A = 0
 	p = 0
+	g = 0
 	exchange = b''
 
 	while b'D' not in exchange:
@@ -22,55 +20,21 @@ def ReadOtherParameters(clientsocket):
 	exchange = exchange.decode()
 	pieces = exchange.split('\n')
 
+	# We do not care about A, but we need p and g.
 	p = int(pieces[1])
-	A = int(pieces[3])
-	return A, p
+	g = int(pieces[2])
 
-# 1st attack: set g = 1.
-# The server computes B = 1^b mod p = 1 no matter the rest of the parameters,
-# and we pass B = 1 to the client. A stays correct.
-# At both sides, the final secret is 1.
-def DHExchangeBadServer1(clientsocket, mysocket):
-	A, p = ReadOtherParameters(clientsocket)
-	my_g = 1
-
-	relayedMessage = 'BEGIN\n%s\n%s\n%s\nEND' % (str(p), str(my_g), str(A))
+	# Relay a message to the good server by replacing A with p.
+	# This means that B will be modexp(p, b, p), which, no matter
+	# what the value of b is, is equal to 0.
+	relayedMessage = 'BEGIN\n%s\n%s\n%s\nEND' % (str(p), str(g), str(p))
 	mysocket.send(relayedMessage.encode())
 
-	messageForClient = 'BEGIN\n1\nEND'
-	clientsocket.send(messageForClient.encode())
-	return 1
-
-# 2nd attack: set g = p.
-# In this case we get that A = B = 0. However since the client computes
-# A before we can "inject" our bad g, we need to relay A = 0 to the
-# server, and discard the A passed by the client.
-# The final secret is also 0 at this point.
-def DHExchangeBadServer2(clientsocket, mysocket):
-	_, p = ReadOtherParameters(clientsocket)
-	my_g = p
-
-	relayedMessage = 'BEGIN\n%s\n%s\n%s\nEND' % (str(p), str(my_g), str(0))
-	mysocket.send(relayedMessage.encode())
-
-	messageForClient = 'BEGIN\n0\nEND'
+	# For the same reason, relay a message to the client where B
+	# is replaced by p. Now A will be equal to 0 too.
+	messageForClient = 'BEGIN\n%s\nEND' % str(p)
 	clientsocket.send(messageForClient.encode())
 	return 0
-
-# 3rd attack: set g = p - 1.
-# THis is similar to the 1st attack because the final secret is 1, but
-# again to achieve that we need to inject our own A instead of the
-# one computed by the client.
-def DHExchangeBadServer3(clientsocket, mysocket):
-	_, p = ReadOtherParameters(clientsocket)
-	my_g = p - 1
-
-	relayedMessage = 'BEGIN\n%s\n%s\n%s\nEND' % (str(p), str(my_g), str(1))
-	mysocket.send(relayedMessage.encode())
-
-	messageForClient = 'BEGIN\n1\nEND'
-	clientsocket.send(messageForClient.encode())
-	return 1
 
 # This is the same as for the 'good' server, since we correctly
 # guessed the secret key.
@@ -107,7 +71,7 @@ if __name__ == '__main__':
 
 		# If you read the function you find out the secret can be
 		# predicted without computation :)
-		secret = DHExchangeBadServer3(clientsocket, mysocket)
+		secret = DHExchangeBadServer(clientsocket, mysocket)
 		print('The computed secret is', str(secret))
 
 		# Gets the verification message, decrypts it, and then
