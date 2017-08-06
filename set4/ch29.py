@@ -1,9 +1,11 @@
 #!/usr/bin/python3
 
-from sha1_mac import Sha1Sign
-from sha1_mac import Sha1Hash
+from ch28 import Sha1Sign
+from ch28 import Sha1Hash
 import hashlib
 import struct
+
+# Set 4, challenge 29: break a SHA-1 keyed MAC using length extension.
 
 def makeGluePadding(message, keylen):
 	byteLength = len(message) + keylen
