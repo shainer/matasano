@@ -3,6 +3,8 @@
 import hashlib
 import random
 
+# Set 5, challenge 33: Implement Diffie-Hellman.
+
 # Taken from
 # http://stackoverflow.com/questions/5486204/fast-modulo-calculations-in-python-and-ruby
 # Required because any regular library blows up computing this with such huge numbers.
