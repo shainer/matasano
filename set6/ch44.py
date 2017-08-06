@@ -4,6 +4,8 @@ import hashlib
 import dsa
 import rsa
 
+# Set 6, challenge 44: DSA nonce recovery from repeated nonce.
+
 # Parses the messages and other data into a list of dictionaries.
 def ReadMessages(filename):
 	content = None
