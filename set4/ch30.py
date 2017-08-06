@@ -6,6 +6,8 @@ from md4_mac import _pad
 import binascii
 import struct
 
+# Set 4, challenge 30: Break an MD4 keyed MAC using length extension.
+
 def makeGluePadding(message, keylen):
 	byteLength = len(message) + keylen
 	bitLength = byteLength * 8
