@@ -1,5 +1,7 @@
 #!/usr/bin/python3
 
+# RSA implementation, taken from set 5.
+
 import random
 from utils import modexp
 from primes import getProbablePrime
