@@ -1,8 +1,10 @@
 #!/usr/bin/python3
 
-from mersenne_twister import MersenneTwister
+from ch21 import MersenneTwister
 import random
 import time
+
+# Set 3, challenge 22: crack a MT19937 seed.
 
 MIN_PAUSE = 40
 MAX_PAUSE = 1000
