@@ -2,9 +2,12 @@
 
 from Crypto.Cipher import AES
 from Crypto import Random
-import ctr_decryption
+import ch18 as ctr
 import base64
+# Note: this is the same module I implemented for set 1.
 from plaintext_verifier import PlaintextVerifier
+
+# Set 3, Challenge 19: break fixed-nonce CTR mode using substitutions.
 
 def EncryptWithFixedNonce(plaintextes):
 	"""Challenge setup: encrypt all the plaintextes separately with
@@ -13,8 +16,7 @@ def EncryptWithFixedNonce(plaintextes):
 	key = Random.new().read(AES.block_size)
 
 	for pt in plaintextes:
-		ct = ctr_decryption.DoCTR(
-			base64.b64decode(pt), key, 0)
+		ct = ctr.DoCTR(base64.b64decode(pt), key, 0)
 		result.append(ct)
 
 	return result
