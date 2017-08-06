@@ -5,6 +5,8 @@ from Crypto.Util.strxor import strxor
 
 import math
 
+# Set 7, challenge 53: Kelsey and Schneier's expandable messages.
+
 def padPKCS7(message, k=16):
     """Apply PKCS7 padding to a message, if required."""
     if len(message) % k == 0:
