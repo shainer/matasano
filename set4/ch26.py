@@ -2,6 +2,8 @@
 
 from ctr import DoCTR
 
+# Set 4, challenge 26: CTR bitflipping.
+
 def Encrypt(inputBytes):
 	# Cannot cheat! :)
 	if ord('=') in inputBytes:
