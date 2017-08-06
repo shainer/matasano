@@ -5,6 +5,8 @@ from Crypto import Random
 import base64
 import collections
 
+# Set 7, challenge 56: RC4 single-byte biases.
+
 def RC4Oracle(request):
 	cookie = base64.b64decode('QkUgU1VSRSBUTyBEUklOSyBZT1VSIE9WQUxUSU5F')
 	plaintext = request + cookie
