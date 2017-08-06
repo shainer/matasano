@@ -4,6 +4,8 @@ import hashlib
 import hmac
 import time
 
+# Set 4, challenge 31: Implement and break HMAC-SHA1 with an artificial timing leak.
+
 # Compute the HMAC of the file content.
 def ComputeHMAC(filename):
 	bindata = None
