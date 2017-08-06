@@ -6,6 +6,8 @@ import collections
 import itertools
 import math
 
+# Set 7, challenge 54: Kelsey and Kohno's Nostradamus attack.
+
 def padPKCS7(message, k=AES.block_size):
 	"""Usual PKCS#7 padding."""
 	if len(message) % k == 0:
