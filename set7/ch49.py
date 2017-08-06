@@ -4,6 +4,8 @@ from Crypto.Cipher import AES
 from Crypto import Random
 from Crypto.Util.strxor import strxor
 
+# Set 7, challenge 49: CBC-MAC message forgery.
+
 def GenerateTransaction(aSender, aDest, amount):
     t = 'from=%s&to=%s&amount=%s' % (aSender, aDest, str(amount))
     # Converts to byte string.
