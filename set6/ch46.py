@@ -5,6 +5,8 @@ import math
 import utils
 import rsa
 
+# Set 6, challenge 46: RSA parity oracle.
+
 class ParityOracle(object):
 	def __init__(self, key):
 		self._key = key
