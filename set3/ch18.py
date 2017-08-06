@@ -4,6 +4,8 @@ import base64
 from Crypto.Cipher import AES
 from Crypto.Util import Counter
 
+# Set 3, Challenge 18: implement CTR, the stream cipher mode.
+
 def BlockXOR(b1, b2):
 	"""XOR of two blocks of bytes. b2 is allowed to be longer
 	than b1, the extra bytes will simply be ignored."""
