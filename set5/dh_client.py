@@ -3,7 +3,7 @@
 from Crypto.Cipher import AES
 from Crypto import Random
 
-import diffie_hellman as dh
+import ch33 as dh
 import hashlib
 import random
 import socket
@@ -71,8 +71,10 @@ if __name__ == '__main__':
 		sys.exit(1)
 
 	mode = sys.argv[1]
+        # Connects to the real server.
 	if mode == 'good':
 		DHExchangeClient('localhost', 10000)
+        # Connects to our bad server doing a MITM attack.
 	elif mode == 'bad':
 		DHExchangeClient('localhost', 10002)
 	else:

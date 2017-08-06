@@ -1,10 +1,12 @@
 #!/usr/bin/python3
 
-import diffie_hellman as dh
+import ch33 as dh
 import hashlib
 import random
 import socket
 import sys
+
+# Set 5, challenge 36-37.
 
 def ReadUntilNewline(clientsocket):
 	data = b''

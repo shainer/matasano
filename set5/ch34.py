@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-import diffie_hellman as dh
+import ch33 as dh
 import hashlib
 from Crypto.Cipher import AES
 import random

@@ -3,7 +3,7 @@
 import hashlib
 import random
 import socket
-import diffie_hellman as dh
+import ch33 as dh
 
 # Dumb utility: we read one byte at a time to avoid reading
 # two newlines in the same pass, since we may send pretty
