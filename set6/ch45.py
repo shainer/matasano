@@ -2,6 +2,8 @@
 
 import dsa
 
+# Set 6, challenge 45: DSA parameter tampering.
+
 # We do not actually run it because to do it we need to relax the DSA implementation.
 # In the sign() function, the generated r, the first part of the signature, is always 0,
 # which is not actually allowed by the specification. This is because when you compute
