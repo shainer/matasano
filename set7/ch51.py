@@ -9,6 +9,8 @@ from Crypto.Cipher import AES
 from Crypto import Random
 from Crypto.Util import Counter
 
+# Set 7, challenge 51: compression ratio side-channel attack.
+
 def padPKCS7(message, k=16):
 	if len(message) % k == 0:
 		return message
