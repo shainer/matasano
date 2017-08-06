@@ -3,6 +3,9 @@
 import md4
 import random
 
+# Set 7, challenge 55: MD4 collisions.
+# INCOMPLETE.
+
 A0 = 0x67452301
 B0 = 0xefcdab89
 C0 = 0x98badcfe
