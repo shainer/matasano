@@ -4,6 +4,8 @@ from Crypto.Cipher import AES
 import math
 import itertools
 
+# Set 7, challenge 52: iterated hash function multicollisions.
+
 def padPKCS7(message, k=16):
 	"""Usual PKCS#7 padding."""
 	if len(message) % k == 0:
