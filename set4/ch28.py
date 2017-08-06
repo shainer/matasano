@@ -3,6 +3,8 @@
 import struct
 import hashlib
 
+# Set 4, challenge 28: implement a SHA-1 keyed MAC.
+
 # Based on the pseudocode on the Wikipedia page:
 # https://en.wikipedia.org/wiki/SHA-1#SHA-1_pseudocode
 class Sha1Hash(object):
