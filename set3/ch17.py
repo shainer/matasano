@@ -1,5 +1,7 @@
 #!/usr/bin/python3
 
+# Set 3, Challenge 17: the CBC padding oracle.
+
 import base64
 from Crypto.Cipher import AES
 from Crypto import Random
