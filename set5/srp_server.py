@@ -5,6 +5,12 @@ import random
 import socket
 import ch33 as dh
 
+SERVER_PORT = 10000
+# Server and client already agreed on this password.
+PASSWORD = b'mybeautifulpassword'
+
+# Secure Remote Password server used in a few challenges of this set.
+
 # Dumb utility: we read one byte at a time to avoid reading
 # two newlines in the same pass, since we may send pretty
 # small numbers.
@@ -24,8 +30,6 @@ def SRPSetup(clientsocket):
 		    '4ddef9519b3cd3a431b302b0a6df25f14374fe1356d6d51c245e485b576625e7ec6f44c42e9a637ed6b0bff5cb6f40'
 		    '6b7edee386bfb5a899fa5ae9f24117c4b1fe649286651ece45b3dc2007cb8a163bf0598da48361c55d39a69163fa8f'
 		    'd24cf5f83655d23dca3ad961c62f356208552bb9ed529077096966d670c354e4abc9804f1746c08ca237327ffffffffffffffff', 16)
-	# Server and client have agreed already on a password.
-	P = b'mybeautifulpassword'
 
 	# Random salt.
 	salt = random.randint(1, 100000)
@@ -35,7 +39,7 @@ def SRPSetup(clientsocket):
 	# this by simply taking the decimal equivalent of the hash.
 	sha = hashlib.sha256()
 	sha.update(saltBytes)
-	sha.update(P)
+	sha.update(PASSWORD)
 	xhash = sha.hexdigest()
 
 	x = int(xhash, 16)
@@ -71,7 +75,7 @@ def SRPSetup(clientsocket):
 if __name__ == '__main__':
 	serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 	# Bind the socket locally.
-	serversocket.bind(('localhost', 10000))
+	serversocket.bind(('localhost', SERVER_PORT))
 	serversocket.listen(5)
 
 	# Dumb single-threaded server.
