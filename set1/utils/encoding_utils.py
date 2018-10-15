@@ -56,29 +56,28 @@ def HexToBin(hex_string):
 
 	return res
 
+
 def HexToBase64(hex_string):
 	"""Converts an hexadecimal string into a base64-encoded string."""
-    bin_string = HexToBin(hex_string)
+	bin_string = HexToBin(hex_string)
 
     # The list of all base64 characters, ordered by their numerical position.
-    base64table = (list(string.ascii_uppercase) +
-    			   list(string.ascii_lowercase) +
-    			   [str(x) for x in range(10)] +
-    			   ['+', '/'])
-    BIN_TO_B64_MAP = {}
-    index = 0
+	base64table = (list(string.ascii_uppercase) + list(string.ascii_lowercase) +
+    			   [str(x) for x in range(10)] + ['+', '/'])
+	BIN_TO_B64_MAP = {}
+	index = 0
 
     # For each number between 0 and 64, in binary digits, map it to the base64
     # character at that position.
-    for bin in map(''.join, itertools.product('01', repeat=6)):
-    	BIN_TO_B64_MAP[bin] = base64table[index]
-    	index += 1
+	for bin in map(''.join, itertools.product('01', repeat=6)):
+		BIN_TO_B64_MAP[bin] = base64table[index]
+		index += 1
 
-    b64_string = ''
-    for j in range(0, len(bin_string) - 5, 6):
-    	b64_string += BIN_TO_B64_MAP[bin_string[j:j+6]]
+	b64_string = ''
+	for j in range(0, len(bin_string) - 5, 6):
+		b64_string += BIN_TO_B64_MAP[bin_string[j:j+6]]
 
-    return b64_string
+	return b64_string
 
 
 def BinToHex(bin_string):
